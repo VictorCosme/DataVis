@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Teste ECharts</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+  <div id="geomap" style="width:99vw;height:65vh;border:0;padding:0"></div>
+  <div id="history-serie" style="width:99vw;height:33vh;border:0;padding:0"></div>
+
+  <script>
+    var geomap = echarts.init(document.getElementById('geomap'));
+    geomap.showLoading();
+    $.getJSON('./world.json', function (usaJson) {
+      geomap.hideLoading();
+
+      echarts.registerMap('world', usaJson);
+
+      option = {
+        title: {
+          text: 'Volume de Exportações do Brasil (Ano 2025)',
+          subtext: 'Dados do Monitor do Comércio Exterior Brasileiro',
+        },
+
+        tooltip: {
+          trigger: 'item',
+          showDelay: 0,
+          transitionDuration: 0.2
+        },
+
+        visualMap: {
+          left: 'right',
+          name: 'nomeiz',
+          top: 'top',
+          outerHeight: '3000px',
+          min: 500000,
+          max: 38000000,
+          inRange: {
+            color: [
+              '#C5FFE7',
+              '#196D4A',
+            ]
+          },
+          itemHeight: 500,             // altura do slider
+          calculable: true
+        },
+
+        series: [
+          {
+            name: 'Volume de Exportações do Brasil (Ano 2025)',
+            type: 'map',
+            roam: true,
+            map: 'world',
+            emphasis: {
+              label: {
+                show: true
+              }
+            }
+          }
+        ]
+      };
+      geomap.setOption(option);
+    });
+
+
+    // OUTRO MAPAAA
+    var chartDom = document.getElementById('history-serie');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+      title: {
+        text: 'Totais por ano',
+        left: 'left'
+      },
+
+      tooltip: {
+        trigger: 'axis',
+      },
+
+      legend: {
+        top: 'top',
+        data: ['Exportações', 'Importações', 'Balança Comercial']
+      },
+
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: [2016, 2017, 2019, 2020, 2021, 2022, 2023]
+      },
+
+      yAxis: {
+        name: 'Bilhões de US$',
+        nameGap: 25,
+        type: 'value'
+      },
+
+      series: [
+        {
+          name: 'Exportações',
+          color: 'lightgreen',
+          type: 'line',
+          stack: 'Total',
+          smooth: true,
+          data: [120, 132, 101, 134, 90, 230, 210]
+        },
+        {
+          name: 'Importações',
+          color: 'pink',
+          type: 'line',
+          smooth: true,
+          stack: 'Total',
+          data: [220, 182, 191, 234, 290, 330, 310]
+        },
+        {
+          name: 'Balança Comercial',
+          color: 'lightblue',
+          type: 'line',
+          stack: 'Total',
+          data: [150, 232, 201, 154, 190, 330, 410]
+        }
+      ]
+    };
+
+    option && myChart.setOption(option);
+
+  </script>
+
+</body>
+
+</html>
